@@ -1,1 +1,140 @@
+explanation of project
+To design a C++ program that:
+ Maintains a collection of shapes (Rectangle, Circle, Triangle)
+ Uses dynamic memory allocation
+ Uses polymorphism to compute area and draw shapes
+ Allows adding and removing shapes dynamically
+
+
+HOW IT WORKS – STEP BY STEP
+1.Data Structure for Coordinates
+struct Point { float x, y; }; Used to represent points (x, y) in a 2D space — useful for triangle vertices.
+2. Abstract Class Shape
+class Shape {
+public:
+    virtual float area() = 0;
+    virtual void drawASCII() = 0;
+    virtual ~Shape() {}
+};
+
+ Acts like a blueprint for all shapes.
+ Declares virtual functions for:
+
+ area(): calculates area
+ drawASCII(): displays shape in simple text form
+ = 0 means derived classes must override these methods.
+
+3. Derived Shape Classes
+Rectangle
+
+ Stores width and height using pointers (float).
+ Calculates area using width height.
+ Draws a grid of stars in a rectangular pattern.
+ Circle
+
+ Stores radius as a pointer (float).
+ Calculates area with formula π * r².
+ Draws a circular pattern using distance checks (x² + y² ≤ r²).
+Triangle
+ Stores 3 Point structs dynamically in a Point vertices array.
+ Uses the shoelace formula to calculate area from 3 vertices:
+ \text{Area} = \frac{1}{2} |Ax(By − Cy) + Bx(Cy − Ay) + Cx(Ay − By)|
+ Draws a simple triangle using ASCII (not to scale).
+
+ 4.Shape Collection Manager
+
+class ShapeManager {
+    Shape shapes;  // Dynamic array of Shape pointers
+    int count;       // Number of shapes stored
+};
+
+ Adding a shape:
+
+   Allocates a new array of pointers with +1 size
+   Copies all previous pointers
+   Adds new one
+   Deletes old array
+ Removing a shape:
+
+   Deletes the shape at given index
+   Allocates a smaller array
+   Skips the removed one while copying
+   Deletes old array
+  Displaying shapes:
+
+   Loops through all shapes
+  Calls area() and drawASCII() (using polymorphism)
+
+ 5.Main Function Logic
+
+int main() {
+    ShapeManager manager;
+    manager.addShape(new Rectangle(6, 3));
+    manager.addShape(new Circle(4));
+    manager.addShape(new Triangle(A, B, C));
+    manager.displayShapes();       // Show all shapes
+    manager.removeShape(1);        // Remove the circle
+    manager.displayShapes();       // Show updated list
+}
+
+ What's happening?
+
+ Each shape is created dynamically using new
+ Shape pointers point to the correct derived class object
+ When area()` or `drawASCII()` is called, C++ automatically uses the correct class version via **virtual dispatch**
+ All memory is freed properly at the end via destructors
+
+ WHY THIS PROJECT IS USEFUL
+
+It demonstrates:
+
+Polymorphism: Common interface (Shape) with different behaviors
+Dynamic Memory: Allocation & resizing of shape arrays
+Inheritance: Reuse and extension of base class functionality
+Pointer Arithmetic: Accessing and managing dynamic shape data
+
+ Output Example
+
+All Shapes:
+Shape #1:
+Area: 18.00
+Rectangle:
+* * * * * *
+* * * * * *
+* * * * * *
+------------------------
+Shape #2:
+Area: 50.27
+Circle (approx):
+   ****
+  ******
+  ******
+   ****
+------------------------
+Shape #3:
+Area: 12.50
+Triangle (simple):
+   *
+  * *
+ *   *
+*******
+------------------------
+
+After Removing Shape 2:
+Shape #1:
+Area: 18.00
+Rectangle:
+* * * * * *
+* * * * * *
+* * * * * *
+------------------------
+Shape #2:
+Area: 12.50
+Triangle (simple):
+   *
+  * *
+ *   *
+*******
+------------------------
+
 
